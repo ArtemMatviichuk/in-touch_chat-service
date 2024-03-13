@@ -46,7 +46,7 @@ builder.Services.AddTransient<IChatService, ChatService.Services.Implementations
 
 // events services
 builder.Services.AddTransient<IEventDeterminator, EventDeterminator>();
-builder.Services.AddTransient<IEventProcessor, EventProcessor>();
+builder.Services.AddScoped<IEventProcessor, EventProcessor>();
 builder.Services.AddHostedService<MessageBusSubscriber>();
 
 // grpc services

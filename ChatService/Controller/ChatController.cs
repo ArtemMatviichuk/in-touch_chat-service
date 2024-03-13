@@ -76,7 +76,8 @@ namespace ChatService.Controller
         [HttpGet("{chatId}/Image")]
         public async Task<IActionResult> GetChatImage(int chatId)
         {
-            var file = await _chatService.GetChatImage(chatId);
+            int authId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var file = await _chatService.GetChatImage(authId, chatId);
 
             return File(file.Bytes!, file.ContentType, file.FileName);
         }

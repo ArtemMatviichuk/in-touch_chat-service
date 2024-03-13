@@ -6,7 +6,6 @@ using ChatService.Common.Exceptions;
 using ChatService.Data.Entity;
 using ChatService.Data.Repositories.Interfaces;
 using ChatService.Services.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ChatService.Services.Implementations
 {
