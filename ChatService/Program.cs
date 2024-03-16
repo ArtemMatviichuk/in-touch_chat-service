@@ -30,7 +30,7 @@ var rabbitMQOptions = new RabbitMQOptions();
 builder.Configuration.Bind(nameof(RabbitMQOptions), rabbitMQOptions);
 builder.Services.AddSingleton(rabbitMQOptions);
 
-builder.Services.AddDbContext<ChatContext>(opt => opt.UseSqlServer(
+builder.Services.AddDbContext<ChatContext>(opt => opt.UseOracle(
     builder.Configuration.GetConnectionString(AppConstants.ConnectionStringName)
 ));
 

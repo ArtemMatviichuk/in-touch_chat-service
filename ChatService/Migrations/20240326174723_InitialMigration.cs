@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ChatService.Migrations
 {
     /// <inheritdoc />
-    public partial class chatandmessages : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,10 +15,10 @@ namespace ChatService.Migrations
                 name: "Chats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IsPrivate = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
+                    IsPrivate = table.Column<bool>(type: "NUMBER(1)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,16 +26,30 @@ namespace ChatService.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
+                    AuthenticationId = table.Column<int>(type: "NUMBER(10)", nullable: true),
+                    PublicId = table.Column<string>(type: "NVARCHAR2(128)", maxLength: 128, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ChatInfos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", maxLength: 4095, nullable: true),
-                    ChatImageName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    LastModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ChatId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
+                    Name = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "NCLOB", maxLength: 4095, nullable: true),
+                    ChatImageName = table.Column<string>(type: "NVARCHAR2(255)", maxLength: 255, nullable: true),
+                    LastModified = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: true),
+                    ChatId = table.Column<int>(type: "NUMBER(10)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,8 +66,8 @@ namespace ChatService.Migrations
                 name: "ChatUser",
                 columns: table => new
                 {
-                    ChatId = table.Column<int>(type: "int", nullable: false),
-                    ParticipantsId = table.Column<int>(type: "int", nullable: false)
+                    ChatId = table.Column<int>(type: "NUMBER(10)", nullable: false),
+                    ParticipantsId = table.Column<int>(type: "NUMBER(10)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,11 +90,11 @@ namespace ChatService.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SenderId = table.Column<int>(type: "int", nullable: false),
-                    ChatId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "NUMBER(10)", nullable: false)
+                        .Annotation("Oracle:Identity", "START WITH 1 INCREMENT BY 1"),
+                    Content = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
+                    SenderId = table.Column<int>(type: "NUMBER(10)", nullable: false),
+                    ChatId = table.Column<int>(type: "NUMBER(10)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,6 +132,19 @@ namespace ChatService.Migrations
                 name: "IX_Messages_SenderId",
                 table: "Messages",
                 column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_AuthenticationId",
+                table: "Users",
+                column: "AuthenticationId",
+                unique: true,
+                filter: "\"AuthenticationId\" IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PublicId",
+                table: "Users",
+                column: "PublicId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -134,6 +161,9 @@ namespace ChatService.Migrations
 
             migrationBuilder.DropTable(
                 name: "Chats");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
